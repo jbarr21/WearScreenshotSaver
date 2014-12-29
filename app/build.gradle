@@ -1,0 +1,61 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:2.5.0'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "com.github.jbarr21.wearscreenshotsaver"
+        minSdkVersion 19
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("release-keystore.jks")
+
+            // These two lines make gradle believe that the signingConfigs section is complete.
+            // Without them, tasks like installRelease will not be available!
+            keyAlias 'PROMPT_DEV'
+            storePassword 'PROMPT_DEV'
+            keyPassword 'PROMPT_DEV'
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled true
+        }
+
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-annotations:21.0.+'
+    compile 'io.reactivex:rxandroid:0.23.0'
+}
+
+apply from: 'https://raw.github.com/twotoasters/HelloAndroidStudio/master/gradle/keystore.gradle'
