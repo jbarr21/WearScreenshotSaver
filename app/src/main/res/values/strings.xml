@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Wear Screenshot Saver</string>
+    <string name="app_name">Wear Screen Saver</string>
     <string name="screenshot_saved">Wearable screenshot saved to %s</string>
     <string name="screenshot_error">Failed to save wearable screenshot</string>
     <string name="storage_permission_denied">Failed to acquire the external storage permission</string>
