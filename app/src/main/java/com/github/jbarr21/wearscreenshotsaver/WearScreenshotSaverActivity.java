@@ -1,5 +1,6 @@
 package com.github.jbarr21.wearscreenshotsaver;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,6 +12,8 @@ import android.provider.MediaStore.Images.Media;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,8 +34,17 @@ public class WearScreenshotSaverActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        saveImageToDevice();
-        finish();
+        RxPermissions.getInstance(this)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(granted -> {
+                    if (granted) {
+                        saveImageToDevice();
+                        finish();
+                    } else {
+                        showMessage(getString(R.string.storage_permission_denied));
+                        finish();
+                    }
+                });
     }
 
     private void saveImageToDevice() {
@@ -89,11 +101,15 @@ public class WearScreenshotSaverActivity extends Activity {
     }
 
     private void onSuccess(@NonNull File file) {
-        Toast.makeText(this, getString(R.string.screenshot_saved, file.getParentFile().getAbsolutePath()), Toast.LENGTH_LONG).show();
+        showMessage(getString(R.string.screenshot_saved, file.getParentFile().getAbsolutePath()));
     }
 
     private void onError(Throwable throwable) {
         Log.e(TAG, getString(R.string.screenshot_error), throwable);
-        Toast.makeText(this, R.string.screenshot_error, Toast.LENGTH_SHORT).show();
+        showMessage(getString(R.string.screenshot_error));
+    }
+
+    private void showMessage(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
 }
